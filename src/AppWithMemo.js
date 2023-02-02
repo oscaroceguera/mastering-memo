@@ -1,27 +1,24 @@
-// Using useMemo & useCallback
-import React, { useState, memo, useMemo, useCallback } from "react";
+import React, { useState, memo } from "react";
 import "./App.css";
 
-function Swatch({ params, onClick }) {
+function Swatch({ params }) {
   console.log(`Swatch rendered ${params.color}`);
   return (
     <div
       style={{ margin: 2, width: 75, height: 75, background: params.color }}
-      onClick={onClick}
     ></div>
   );
 }
 
-const MemoSwatch = memo(Swatch);
+const MemoSwatch = memo(Swatch, (prevProps, nextProps) => {
+  return prevProps.params.color === nextProps.params.color;
+});
 
 function App() {
   const [appRenderIndex, setAppRenderIndex] = useState(0);
   const [color, setColor] = useState("red");
 
   console.log(`App rendered ${appRenderIndex}`);
-
-  const params = useMemo(() => ({ color }), [color]);
-  const onClick = useCallback(() => {}, []);
 
   return (
     <div className="App">
@@ -32,7 +29,7 @@ function App() {
         <button onClick={() => setColor(color === "red" ? "blue" : "red")}>
           Change Color
         </button>
-        <MemoSwatch params={params} onClick={onClick} />
+        <MemoSwatch params={{ color }} />
       </div>
     </div>
   );
